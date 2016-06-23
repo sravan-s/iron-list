@@ -680,11 +680,15 @@ will only render 20.
       // `iron-resize` is fired when the list is attached if the event is added
       // before attached causing unnecessary work.
       this.listen(this, 'iron-resize', '_resizeHandler');
+      this.listen(this, 'iron-overlay-opened', '_menuOpened');
+      this.listen(this, 'iron-overlay-closed', '_menuClosed');
     },
 
     detached: function() {
       this._itemsRendered = false;
       this.unlisten(this, 'iron-resize', '_resizeHandler');
+      this.unlisten(this, 'iron-overlay-opened', '_menuOpened');
+      this.listen(this, 'iron-overlay-closed', '_menuClosed');
     },
 
     /**
@@ -1433,6 +1437,34 @@ will only render 20.
         }
       }.bind(this), 1));
     },
+
+    /**
+     * Start - fix for iron menu or other dropdowns going behind te ironlist
+    **/
+    _menuOpened: function(e) {
+      var row = this.getParentById(e.target, 'items');
+      row.style.zIndex = 1;
+    },
+
+    _menuClosed: function(e) {
+      var row = this.getParentById(e.target, 'items');
+      row.style.zIndex = '';
+    },
+
+    getParentById: function(element, id) {
+      var me = this;
+      if (!id) {
+        return element.parentElement;
+      }
+      if (element.parentElement.id === id || element.parentElement.tagName.toLowerCase() === 'body') {
+        return element;
+      } else {
+        return me.getParentById(element.parentElement, id);
+      }
+    },
+    /**
+     * End - fix for iron menu or other dropdowns going behind te ironlist
+    **/
 
     _getModelFromItem: function(item) {
       var key = this._collection.getKey(item);
