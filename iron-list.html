@@ -688,7 +688,7 @@ will only render 20.
       this._itemsRendered = false;
       this.unlisten(this, 'iron-resize', '_resizeHandler');
       this.unlisten(this, 'iron-overlay-opened', '_menuOpened');
-      this.listen(this, 'iron-overlay-closed', '_menuClosed');
+      this.unlisten(this, 'iron-overlay-closed', '_menuClosed');
     },
 
     /**
